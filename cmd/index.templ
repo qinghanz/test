@@ -1,0 +1,58 @@
+package main
+
+import "gotth-quick-start/cmd/mockdb"
+
+templ ScoresPage(matches []mockdb.Match) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+			<script src="https://unpkg.com/htmx.org@1.7.0"></script>
+			<title>Ping Pong Score Tracker</title>
+		</head>
+		<body class="bg-gray-100 text-center py-10">
+			<h1 class="text-4xl font-bold">Ping Pong Score Tracker</h1>
+			@MatchList(matches)
+			@Form()
+		</body>
+	</html>
+}
+
+templ Form() {
+	<form class="mb-8">
+		<div class="mb-4">
+			<input type="text" name="player1" placeholder="Player 1" class="p-2 border rounded" required/>
+			<input type="number" name="score1" placeholder="Score 1" class="p-2 border rounded" required/>
+		</div>
+		<div class="mb-4">
+			<input type="text" name="player2" placeholder="Player 2" class="p-2 border rounded" required/>
+			<input type="number" name="score2" placeholder="Score 2" class="p-2 border rounded" required/>
+		</div>
+		<button
+			type="submit"
+			hx-post="/add"
+			hx-target="#matches"
+			hx-swap="innerHTML"
+			class="p-2 bg-blue-500 text-white rounded"
+		>Add Match</button>
+	</form>
+}
+
+templ MatchList(matchs []mockdb.Match) {
+	<div id="matches">
+		<h2 class="text-2xl font-bold mb-4">Match Scores</h2>
+		for _, match := range matchs {
+			@MatchItem(match)
+		}
+	</div>
+}
+
+templ MatchItem(match mockdb.Match) {
+	<div class="p-4 bg-white shadow-md rounded-md mb-4">
+		<span>
+			{ match.Date.String() }
+		</span>
+	</div>
+}
